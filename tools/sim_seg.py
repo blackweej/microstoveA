@@ -101,11 +101,17 @@ def multiplex_levels(rng, n_digits=4, d=0.25, T=2.0, e=1.0):
     return np.minimum(levels / on, 1.0)
 
 
-def frame(seconds, quad, rng, levels=None, noise=3.0, gain=1.0):
-    """BGR uint8 프레임. LED는 빨강이라 R 채널에 표시가 있고 나머지는 배경광이다."""
+def clean_frame(seconds, quad, levels=None, gain=1.0):
+    """잡음 전 BGR float 프레임. LED는 빨강이라 R 채널에 표시가 있고 나머지는 배경광이다."""
     levels = np.ones(4) if levels is None else levels
     r = warp(canon_image(seconds, levels), quad) * gain
     g = np.full_like(r, 30.0) * gain
-    out = np.stack([g, g, r], axis=-1)                      # B, G, R
-    out = out + rng.normal(0, noise, out.shape)
-    return np.clip(out, 0, 255).astype(np.uint8)
+    return np.stack([g, g, r], axis=-1)
+
+
+def add_noise(clean, rng, noise=3.0):
+    return np.clip(clean + rng.normal(0, noise, clean.shape), 0, 255).astype(np.uint8)
+
+
+def frame(seconds, quad, rng, levels=None, noise=3.0, gain=1.0):
+    return add_noise(clean_frame(seconds, quad, levels, gain), rng, noise)

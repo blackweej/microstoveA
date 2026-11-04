@@ -318,19 +318,18 @@ static int usable(const seg_result *r) { return !r->blank && r->seconds >= 0; }
 int seg_vote(const seg_result *r, int n, seg_result *out) {
     if (!ready) return FCV_E_STATE;
     if (!r || !out || n <= 0) return FCV_E_ARG;
-    int best = -1, best_count = 0;
+    int best = -1;
     float best_margin = 0;
     for (int i = 0; i < n; i++) {
         if (!usable(&r[i])) continue;
         int count = 0;
         float margin = 0;
         for (int j = 0; j < n; j++) if (usable(&r[j]) && r[j].seconds == r[i].seconds) { count++; margin += r[j].margin; }
-        if (count >= 3 && (best < 0 || margin > best_margin)) { best = i; best_count = count; best_margin = margin; }
+        if (count >= 3 && (best < 0 || margin > best_margin)) { best = i; best_margin = margin; }
     }
     memset(out, 0, sizeof *out);
     out->seconds = -1;
     if (best < 0) return SEG_UNSTABLE;
-    (void)best_count;
 
     /* §8.5-3 (a) 01:70과 02:10은 초가 같으므로 묶인 결과를 모두 본다 */
     int tens = L.mss ? 1 : 2;

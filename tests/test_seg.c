@@ -5,10 +5,6 @@
 #include "../src/internal.h"
 #include "minitest.h"
 
-int seg_solve_homography(const double quad[8], double canon_w, double canon_h, double h[8]);
-int seg_digit_code(int digit);
-int seg_otsu(const float *v, int n, float *threshold, float *contrast, float *margin);
-
 #define TMP "t_layout.tmp"
 
 static void write_segs(FILE *f, int digits) {

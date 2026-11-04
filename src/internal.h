@@ -44,4 +44,9 @@ void cnn_pool_relu(const float *P, int H, int W, float *y);
 void cnn_logits(const float *x, float *z);        /* x: 3×96×96 CHW, z: K개 */
 void cnn_softmax(const float *z, int n, float *p);
 
+/* seg.c */
+int  seg_solve_homography(const double quad[8], double canon_w, double canon_h, double h[8]);
+int  seg_digit_code(int digit);
+int  seg_otsu(const float *v, int n, float *threshold, float *contrast, float *margin);
+
 #endif
