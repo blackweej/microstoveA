@@ -6,18 +6,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 `foodcv` is Part A of a microwave time-setter project: food classification, food area measurement, and display reading. It takes pixels and returns numbers. Camera capture, IR temperature, time calculation, the dial motor loop, and UI belong to Parts B and C, and A never computes mass.
 
-**Most of this is not built yet.** The repo holds only:
+`A_PART_SPEC.md` is the implementation contract, written in Korean. It is authoritative, so read the relevant section before changing anything. Section references below (§N) point to it. `reference/` holds the original prototype. **Do not modify `reference/`.**
 
-- `A_PART_SPEC.md`: the implementation contract, written in Korean. It is authoritative, so read the relevant section before implementing anything. Section references below (§N) point to it.
-- `reference/area.c`, `reference/sim.py`: the validated prototype. **Do not modify `reference/`.**
-
-The layout in §2 (`include/`, `src/`, `tests/`, `tools/`, `config/`, `Makefile`, `CHANGELOG.md`) is the target. Work proceeds through milestones M0–M6 in §14, with `make test` passing and a commit at the end of each. The directory is not a git repository yet.
+Milestones M0–M6 in §14 are implemented and tested on synthetic images only. Nothing has run on real hardware or real photos yet, and `model.fcv` does not exist until photos are collected.
 
 Deadlines: DLL handoff to Part C on 2026-11-13 (M0–M4 and M6 required), final on 2026-12-04.
 
 ## Commands
 
-These are defined by the spec (§2, §13). The Makefile does not exist until M0.
+These are defined by the spec (§2, §13).
 
 ```sh
 make libfoodcv.so     # Linux dev build
@@ -29,7 +26,15 @@ pytest tools/tests    # Python integration tests on synthetic images
 
 The bar is zero warnings under `-std=c11 -O3 -Wall -Wextra -Wpedantic`. Never use `-march=native`.
 
-This Windows machine currently has no `gcc`, `make`, MinGW, `pytest`, or `opencv-python`. It has Python 3.12 (the spec says 3.11) with numpy and scipy. C code cannot be built or tested here until a toolchain is installed.
+This Windows machine has no `gcc` or `make`. Use the project venv instead, which has `zig cc` (targets `x86_64-windows-gnu`) and every Python dependency:
+
+```sh
+.venv/Scripts/python tools/build.py test     # also: lib, debug (UBSan; no ASan on this target)
+.venv/Scripts/python -m pytest tools/tests   # about 13 minutes, so run it in the background
+.venv/Scripts/python -m pytest tools/tests/test_area.py -k a2
+```
+
+`conftest.py` rebuilds `foodcv.dll`, so two pytest runs cannot overlap on Windows (the DLL is locked while loaded). The venv has headless OpenCV, so `calib_tool.py` needs `opencv-python` to open windows. Long bash heredocs fail to parse in this environment, so write files with the Write tool.
 
 ## Hard rules (§0)
 
