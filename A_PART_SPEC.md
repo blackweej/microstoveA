@@ -327,7 +327,7 @@ union-find 부모·압축 번호 int32 (w·h/2 + 2), 성분 통계 (w·h/2 + 2).
 | 변경 | 시제품 | 변경 후 |
 |---|---|---|
 | §4.3-1 `R ≥ red_k·G` 추가 | 파란 접시 가림 5·10·20%: 18/18 미검출 | 18/18 `AREA_REF_CHANGED`. k = 1.6–1.8 동일, k = 1.5는 5·10% 미검출, k = 2.0은 N_cal이 0.4% 줄어 기존 red_k 1.8을 씀 |
-| §4.3-1 큰 성분 → MERGED | 원과 합쳐진 피자(N ≈ 5.1·N_cal)가 `AREA_REF_MISSING` | `AREA_REF_MERGED` |
+| §4.3-1 큰 성분 → MERGED | 원과 합쳐진 큰 빨간 음식이 후보에서 빠져 `AREA_REF_MISSING` | `AREA_REF_MERGED`. `R ≥ red_k·G` 뒤로는 양념치킨처럼 정말 빨간 음식만 합쳐지고 피자는 합쳐지지 않는다 |
 | §4.3-5a 조명 검사 | 밝기 ×1.15: 피자 55 → 388.7 cm², `AREA_OK` | `AREA_LIGHT_CHANGED`. ×0.8–×1.12 면적은 54.9–55.7 cm²로 정상, 중앙값 ×1.10 = 1.094 |
 | §4.3-5b 이동 검사 | 빈 접시 16 px 이동: 9.8 cm², `AREA_OK` | `AREA_PLATE_MOVED`. 띠 비율: 이동 없음 0, 6 px 0.02, 8 px 0.21, 16 px 0.40 |
 | §4.2-8 빈 접시 확인 | 음식 위에서도 보정 성공 | `AREA_NOT_EMPTY`. 비접시 비율: 빈 접시 0, 만두 0.09, 피자 0.19, 치킨·볶음밥 0.99. 양념치킨은 0이라 (a)로 잡음 |
@@ -666,7 +666,7 @@ T-C1~C3, T-S1·S2·S4는 `src/internal.h`를 통해 부른다. T-C4의 할당 �
 
 ### 13.2 Python 통합 테스트 (`pytest tools/tests`, 합성 영상)
 
-접시를 따로 적지 않은 시험은 **파란 접시**다. `sim_area.py`의 `render()`는 접시 색을 필수 인자로 받고, 음식은 기준 원에서 1 cm 이상 떼어 놓는다(`food_touch_ref`, `occl`, T-A12 제외).
+접시를 따로 적지 않은 시험은 **파란 접시**다. `sim_area.py`의 `render()`는 접시 색을 필수 인자로 받고, 음식은 기준 원에서 1 cm 이상 떼어 놓는다(`food_touch_ref`, `occl` 제외).
 
 | ID | 기준 (시제품보다 나빠지면 실패) |
 |---|---|
@@ -680,7 +680,7 @@ T-C1~C3, T-S1·S2·S4는 `src/internal.h`를 통해 부른다. T-C4의 할당 �
 | T-A9 | 밝기 ×1.15, ×1.2 → `AREA_LIGHT_CHANGED`. ×0.9, ×1.05 → `AREA_OK` |
 | T-A10 | 빈 접시·음식 접시를 16 px 이동 → `AREA_PLATE_MOVED` 또는 `AREA_REF_CHANGED`. `AREA_OK`·`AREA_EMPTY`는 실패 |
 | T-A11 | 5종 음식이 있는 영상으로 보정 → 전부 `AREA_NOT_EMPTY`. 빈 접시 보정 → 성공 |
-| T-A12 | 피자가 기준 원과 합쳐져 N > 2.5·N_cal → `AREA_REF_MERGED` |
+| T-A12 | 큰 양념치킨이 기준 원과 합쳐져 N > 2.5·N_cal → `AREA_REF_MERGED` |
 | T-A8 | 640×480 한 장 처리 ≤ 50 ms (CI 서버) |
 | T-D1 | sim_seg 기울기 ±15°, 잡음 σ=3, 전 격자 값 200회: 틀린 값 STABLE 0회, UNSTABLE < 5% |
 | T-D2 | 깜빡임 d=1/4, e=1 ms, T=2 ms: 단일 프레임 획 누락률 ≈ 0.25 (±0.05), `fuse 5`로 `read_display`(25장) 시 판정 성공 |
