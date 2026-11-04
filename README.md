@@ -72,6 +72,13 @@ status, seconds = cv.read_display(frames)           # 5 × fuse장
 
 `config/`의 값은 장치마다 다릅니다. 설치할 때 `tools/calib_tool.py`로 만듭니다. `area.cfg`에 `?`가 남아 있으면 래퍼가 예외를 냅니다.
 
+## 학습시작
+
+```python
+  .venv/Scripts/python tools/build.py lib
+  .venv/Scripts/python tools/train.py --images data/images --lib foodcv.dll --roi config/roi.cfg --out model.fcv
+```
+
 ## 구조
 
 ```
