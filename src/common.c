@@ -1,5 +1,11 @@
 /* common.c — 상태 코드 문자열, 버전 (§3) */
-#include "foodcv.h"
+#include <stdlib.h>
+#include "internal.h"
+
+#ifdef FCV_DEBUG_DUMP
+long fcv_malloc_count = 0;
+void *fcv_counted_malloc(size_t n) { fcv_malloc_count++; return malloc(n); }
+#endif
 
 int fcv_api_version(void) { return FCV_API_VERSION; }
 

@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include "foodcv.h"
+#include "internal.h"
 
 #define FCV_PI 3.14159265358979323846
 #define BETA_BINS 512               /* §4.3-5a 히스토그램: β ∈ [0, 2) */
@@ -39,12 +39,12 @@ int area_init(const area_params *p, int w, int h) {
     free_all();
     P = *p; W = w; H = h;
     size_t n = (size_t)w * h, nl = n / 2 + 2;
-    Sbg = malloc(n * sizeof *Sbg);
-    I1 = malloc((size_t)(w + 1) * (h + 1) * sizeof *I1);
-    I2 = malloc((size_t)(w + 1) * (h + 1) * sizeof *I2);
-    m1 = malloc(n); m2 = malloc(n); roi = malloc(n); edge = malloc(n);
-    lab = malloc(n * sizeof *lab); par = malloc(nl * sizeof *par); cid = malloc(nl * sizeof *cid);
-    st = malloc(nl * sizeof *st);
+    Sbg = FCV_MALLOC(n * sizeof *Sbg);
+    I1 = FCV_MALLOC((size_t)(w + 1) * (h + 1) * sizeof *I1);
+    I2 = FCV_MALLOC((size_t)(w + 1) * (h + 1) * sizeof *I2);
+    m1 = FCV_MALLOC(n); m2 = FCV_MALLOC(n); roi = FCV_MALLOC(n); edge = FCV_MALLOC(n);
+    lab = FCV_MALLOC(n * sizeof *lab); par = FCV_MALLOC(nl * sizeof *par); cid = FCV_MALLOC(nl * sizeof *cid);
+    st = FCV_MALLOC(nl * sizeof *st);
     if (!Sbg || !I1 || !I2 || !m1 || !m2 || !roi || !edge || !lab || !par || !cid || !st) {
         free_all(); return FCV_E_NOMEM;
     }

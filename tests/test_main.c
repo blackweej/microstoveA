@@ -6,6 +6,8 @@
 int mt_checks = 0, mt_failures = 0;
 
 void test_area(void);
+void test_cnn(void);
+void test_weights(void);
 
 static void test_common(void) {
     CHECK(fcv_api_version() == FCV_API_VERSION);
@@ -17,6 +19,8 @@ static void test_common(void) {
 int main(void) {
     test_common();
     test_area();
+    test_weights();
+    test_cnn();
     printf("%d checks, %d failures\n", mt_checks, mt_failures);
     return mt_failures ? 1 : 0;
 }
